@@ -26,7 +26,7 @@ public class Main {
             em.persist(team);
 
             Member member = new Member();
-            member.setUsername("teamA");
+            member.setUsername("관리자1");
             member.setAge(10);
             member.changeTeam(team);
             member.setType(MemberType.ADMIN);
@@ -35,15 +35,12 @@ public class Main {
             em.flush();
             em.clear();
 
-            String query = "select m.username, 'HELLO', TRUE, m.type from Member m where m.type = org.example.jpql.MemberType.ADMIN";
-            List<Object[]> result = em.createQuery(query)
-                    .getResultList();
+            String query = "select nullif(m.username, '관리자') from Member m";
 
-            for (Object[] objects : result) {
-                System.out.println("objects = " + objects[0]);
-                System.out.println("objects = " + objects[1]);
-                System.out.println("objects = " + objects[2]);
-                System.out.println("objects = " + objects[3]);
+            List<String> result = em.createQuery(query, String.class).getResultList();
+
+            for (String s : result) {
+                System.out.println("s = " + s);
             }
 
           /*  Member findMember = result.get(0);
