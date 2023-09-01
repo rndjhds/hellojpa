@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.jpql.Member;
+import org.example.jpql.MemberType;
 import org.example.jpql.Team;
 
 import javax.persistence.EntityManager;
@@ -28,18 +29,21 @@ public class Main {
             member.setUsername("teamA");
             member.setAge(10);
             member.changeTeam(team);
+            member.setType(MemberType.ADMIN);
             em.persist(member);
 
             em.flush();
             em.clear();
 
-            String query = "select m from Member m left join m.team t on m.username = t.name";
-            List<Member> result = em.createQuery(query, Member.class)
+            String query = "select m.username, 'HELLO', TRUE, m.type from Member m where m.type = org.example.jpql.MemberType.ADMIN";
+            List<Object[]> result = em.createQuery(query)
                     .getResultList();
 
-            System.out.println("result size = " + result.size());
-            for (Member member1 : result) {
-                System.out.println("member1 = " + member1);
+            for (Object[] objects : result) {
+                System.out.println("objects = " + objects[0]);
+                System.out.println("objects = " + objects[1]);
+                System.out.println("objects = " + objects[2]);
+                System.out.println("objects = " + objects[3]);
             }
 
           /*  Member findMember = result.get(0);
