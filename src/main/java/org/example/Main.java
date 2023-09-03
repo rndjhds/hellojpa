@@ -22,26 +22,47 @@ public class Main {
 
         try {
 
-            Team team = new Team();
-            team.setName("teamA");
-            em.persist(team);
+            Team teamA = new Team();
+            teamA.setName("팀A");
+            em.persist(teamA);
 
-            Member member = new Member();
-            member.setUsername("관리자1");
-            member.setAge(10);
-            member.changeTeam(team);
-            member.setType(MemberType.ADMIN);
-            em.persist(member);
+            Team teamB = new Team();
+            teamB.setName("팀B");
+            em.persist(teamB);
+
+            Member member1 = new Member();
+            member1.setUsername("회원1");
+            member1.setAge(10);
+            member1.changeTeam(teamA);
+            member1.setType(MemberType.ADMIN);
+            em.persist(member1);
+
+            Member member2 = new Member();
+            member2.setUsername("회원2");
+            member2.setAge(10);
+            member2.changeTeam(teamA);
+            member2.setType(MemberType.ADMIN);
+            em.persist(member2);
+
+            Member member3 = new Member();
+            member3.setUsername("회원2");
+            member3.setAge(10);
+            member3.changeTeam(teamB);
+            member3.setType(MemberType.ADMIN);
+            em.persist(member3);
 
             em.flush();
             em.clear();
 
-            String query = "select m.username from Team t join t.members m";
-
-            Collection result = em.createQuery(query, Collection.class).getResultList();
-
-            for (Object s : result) {
-                System.out.println("s = " + s);
+            String jpql = "select distinct t from Team t join fetch t.members";
+            List<Team> result = em.createQuery(jpql, Team.class)
+                    .getResultList();
+            for (Team team : result) {
+                //페치 조인으로 회원과 팀을 함께 조회해서 지연 로딩X
+                System.out.println("team = " + team.getName() + ", " + team.getMembers().size());
+                for(Member member : team.getMembers()) {
+                    System.out.println("-> member = " + member);
+                }
             }
 
           /*  Member findMember = result.get(0);
