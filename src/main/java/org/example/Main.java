@@ -1,7 +1,6 @@
 package org.example;
 
 import org.example.jpql.Member;
-import org.example.jpql.MemberDTO;
 import org.example.jpql.MemberType;
 import org.example.jpql.Team;
 
@@ -9,7 +8,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import java.util.Collection;
 import java.util.List;
 
 public class Main {
@@ -64,12 +62,24 @@ public class Main {
                     .getSingleResult();
             */
 
-            List<Member> resultList = em.createNamedQuery("Member.findByUsername", Member.class)
+            /*List<Member> resultList = em.createNamedQuery("Member.findByUsername", Member.class)
                     .setParameter("username", "회원1")
                     .getResultList();
             for (Member member : resultList){
                 System.out.println("member = " + member);
+            }*/
+
+            // flush자동 호출
+            int resultCount = em.createQuery("update Member m set m.age = 20").executeUpdate();
+
+            System.out.println("resultCount = " + resultCount);
+
+            List<Member> findMembers = em.createQuery("select m from Member m", Member.class).getResultList();
+            for (Member member : findMembers) {
+                System.out.println("member = " + member);
             }
+
+
 
           /*  Member findMember = result.get(0);
             findMember.setAge(20);
