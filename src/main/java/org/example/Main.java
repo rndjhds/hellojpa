@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.jpql.Member;
+import org.example.jpql.MemberDTO;
 import org.example.jpql.MemberType;
 import org.example.jpql.Team;
 
@@ -54,19 +55,14 @@ public class Main {
             em.flush();
             em.clear();
 
-            String jpql = "select t from Team t";
+            String jpql = "select m from Member m where m =: member";
             //String jpql = "select distinct t from Team t join fetch t.members m join fetch m.team"; // 예시로 별칭을 줄 수 있는 경우
             //String jpql = "select distinct t from Team t join fetch t.members"; // 컬렉션 연관 필드와 페치 조인 값이 뻥튀기 되기 때문에 distinct로 중복된 데이터 제거
             //String jpql = "select m from Member m join fetch m.team"; // 단일 연관 필드와 페치 조인
-            List<Team> result = em.createQuery(jpql, Team.class)
-                    .getResultList();
-            for (Team team : result) {
-                //페치 조인으로 회원과 팀을 함께 조회해서 지연 로딩X
-                System.out.println("team = " + team.getName() + ", " + team.getMembers().size());
-                for(Member member : team.getMembers()) {
-                    System.out.println("-> member = " + member);
-                }
-            }
+            Member findMember = em.createQuery(jpql, Member.class)
+                    .setParameter("member", member1)
+                    .getSingleResult();
+            System.out.println("findMember = " + findMember);
 
           /*  Member findMember = result.get(0);
             findMember.setAge(20);
