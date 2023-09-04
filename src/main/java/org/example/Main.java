@@ -54,7 +54,10 @@ public class Main {
             em.flush();
             em.clear();
 
-            String jpql = "select distinct t from Team t join fetch t.members";
+            String jpql = "select t from Team t";
+            //String jpql = "select distinct t from Team t join fetch t.members m join fetch m.team"; // 예시로 별칭을 줄 수 있는 경우
+            //String jpql = "select distinct t from Team t join fetch t.members"; // 컬렉션 연관 필드와 페치 조인 값이 뻥튀기 되기 때문에 distinct로 중복된 데이터 제거
+            //String jpql = "select m from Member m join fetch m.team"; // 단일 연관 필드와 페치 조인
             List<Team> result = em.createQuery(jpql, Team.class)
                     .getResultList();
             for (Team team : result) {
